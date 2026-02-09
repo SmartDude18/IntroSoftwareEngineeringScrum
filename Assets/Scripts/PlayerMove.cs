@@ -4,14 +4,17 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviour
 {
 
-    private Rigidbody body;
+    //inspector items - objects
     [SerializeField]
     private InputActionMap actions;
     [SerializeField]
     private GameObject foot,cam;
     [SerializeField]
     private LayerMask groundLayer;
+    [SerializeField]
+    private PlayerDataBroadcast dataSystem;
 
+    //inspector items - settings
     [SerializeField]
     private float moveSpeed;
     [SerializeField]
@@ -20,9 +23,11 @@ public class PlayerMove : MonoBehaviour
     private float groundCheckDistance;
 
 
-
+    //internal objects
     InputAction moveAction;
     InputAction jumpAction;
+    private Rigidbody body;
+    bool hasJumped;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -37,37 +42,42 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
-        // 4. Read the "Move" action value, which is a 2D vector
-        // and the "Jump" action state, which is a boolean value
-
+        //read input
         Vector2 moveValue = moveAction.ReadValue<Vector2>();
+        bool isGrounded = groundCheck();
 
-        // your movement code here
+        //broadcast system
+        dataSystem.PlayerMove(moveValue.magnitude > 0,moveValue.magnitude);
+        dataSystem.PlayerGrounded(isGrounded);
+
+        //movement
         transform.rotation = Quaternion.Euler(transform.rotation.x, cam.transform.eulerAngles.y, transform.rotation.z);
         body.AddForce(((transform.forward * moveValue.y) + (transform.right * moveValue.x))* moveSpeed, ForceMode.Force);
-        //be aware, there is a physics material that is also being used to help make this feel good, using the difference in dynamic and static friction to start fast but also stop fast
 
-        if (jumpAction.IsPressed())
+        
+        //jump system
+        //has jumped is used to make the movement off of 1 frame of jump force, making the jump more consistent
+        //could be messed with in theory by pressing quickly while still in ground check range, but for how small it is... good luck
+        if (jumpAction.IsPressed() && isGrounded && !hasJumped)
         {
+            hasJumped = true;
             jump();
+        }
+        else if(!jumpAction.IsPressed() && isGrounded && hasJumped)
+        {
+            hasJumped = false;
         }
     }
 
     private void jump()
-    {
-        if(groundCheck())
-        {
-            body.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
-        }
-        
+    {  
+        dataSystem.PlayerJump();
+        body.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
     }
 
     private bool groundCheck()
     {
         RaycastHit hit;
         return (Physics.Raycast(foot.transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer));
-        
     }
 }
