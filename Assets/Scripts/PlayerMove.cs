@@ -24,8 +24,9 @@ public class PlayerMove : MonoBehaviour
     private float jumpHeight;
     [SerializeField]
     private float groundCheckDistance;
-    [SerializeField]
-    private Vector2 camSensitivity;
+    [SerializeField] 
+    [Range(1.0f,100)]
+    private float camSensitivity;
     [SerializeField]
     private float camMaxAngle, camMinAngle;
 
@@ -110,8 +111,8 @@ public class PlayerMove : MonoBehaviour
 
     private void updateCamera(Vector2 lookValue)
     {
-        transform.Rotate(new Vector3(0, lookValue.x * camSensitivity.x, 0));
-        camX -= lookValue.y * camSensitivity.y;
+        transform.Rotate(new Vector3(0, lookValue.x * (camSensitivity * 0.1f), 0));
+        camX -= lookValue.y * (camSensitivity * 0.1f);
         camX = Mathf.Clamp(camX, camMinAngle, camMaxAngle);
         cam.transform.localRotation = Quaternion.Euler(camX, cam.transform.localRotation.y , cam.transform.localRotation.z);
     }
