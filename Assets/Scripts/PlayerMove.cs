@@ -57,8 +57,8 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         lookValue = camAction.ReadValue<Vector2>();
-        yRotation += lookValue.x * (camSensitivity * 0.1f);
-        camX -= lookValue.y * (camSensitivity * 0.1f);
+        yRotation += lookValue.x * (camSensitivity * 0.01f);
+        camX -= lookValue.y * (camSensitivity * 0.01f);
         camX = Mathf.Clamp(camX, camMinAngle, camMaxAngle);
 
         transform.rotation = Quaternion.Euler(0, yRotation, 0);
