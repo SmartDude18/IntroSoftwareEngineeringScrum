@@ -28,6 +28,8 @@ public class PlayerMove : MonoBehaviour
     private float camSensitivity;
     [SerializeField]
     private float camMaxAngle, camMinAngle;
+    [SerializeField]
+    private GameManager gameManager;
 
 
     //internal objects
@@ -37,10 +39,11 @@ public class PlayerMove : MonoBehaviour
     InputAction sprintAction;
 
     Vector2 lookValue;
+    Quaternion forwardCam;
     private Rigidbody body;
     bool hasJumped;
     private float camX = 0;
-    private float yRotation;
+    private float yRotation = -90;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -52,6 +55,9 @@ public class PlayerMove : MonoBehaviour
         sprintAction = InputSystem.actions.FindAction("Sprint");
 
         Cursor.lockState = CursorLockMode.Locked;
+        forwardCam = cam.transform.localRotation;
+
+
     }
 
     void Update()
@@ -137,4 +143,31 @@ public class PlayerMove : MonoBehaviour
         return hit;
     }
 
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        switch(other.gameObject.tag.ToString())
+        {
+            case "Checkpoint":
+                gameManager.UpdateSpawnpoint(false);
+                other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 1).gameObject.SetActive(false);
+                Debug.Log("ShouldChange");
+                other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 2).gameObject.SetActive(true);
+                break;
+
+            case "Restart":
+                gameManager.UpdateSpawnpoint(true);
+
+                camX = forwardCam.eulerAngles.x;
+                yRotation = forwardCam.eulerAngles.y;
+                cam.transform.localRotation = forwardCam;
+                break;
+        }
+    }
 }

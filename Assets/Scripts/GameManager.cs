@@ -1,23 +1,52 @@
 using Unity.VisualScripting;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class GameManager : MonoBehaviour
 {
 
     [SerializeField] private GameObject Player;
     [SerializeField] private GameObject WinText;
+    [SerializeField] private GameObject[] CheckPoints;
+    [SerializeField] private Material[] Materials;
+
     [Range(0,100)]
     [SerializeField] private float distanceValue;
     [SerializeField] private Transform endPos;
 
     public Vector3 spawnPoint { get; private set; }
     private Vector3 endPoint;
+    private Vector3 restartPoint;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        
+        for (int i = 0; i < CheckPoints.Length; i++)
+        {
+            int randTag = Random.Range(0, 4);
+
+            Debug.Log(randTag);
+            if (randTag > 0) 
+            { 
+                CheckPoints[i].gameObject.tag = "Checkpoint";
+                CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = Materials[0];
+
+            }
+            else 
+            {
+                CheckPoints[i].gameObject.tag = "Restart";
+                CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = Materials[1];
+            }
+           
+        }
+
         spawnPoint = Player.transform.position;
-        WinText.transform.position = new Vector3(WinText.transform.position.x + updatePos().x - distanceValue, WinText.transform.position.y, WinText.transform.position.z);
+        restartPoint = spawnPoint;
+        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y, WinText.transform.position.z);
         endPoint = new Vector3(endPos.position.x, endPos.position.y + (distanceValue / 4), WinText.transform.position.z);
     }
 
@@ -27,9 +56,9 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (!(WinText.transform.position.x < (WinText.transform.position.x + updatePos().x - distanceValue)) && WinText.transform.position.x > endPos.position.x)
+        if (!(WinText.transform.position.x < (WinText.transform.position.x + UpdatePos().x - distanceValue)) && WinText.transform.position.x > endPos.position.x)
         {
-            WinText.transform.position = new Vector3(WinText.transform.position.x + updatePos().x - distanceValue, WinText.transform.position.y + updatePos().y + (distanceValue / 4), WinText.transform.position.z);
+            WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 4), WinText.transform.position.z);
         }
         else if (WinText.transform.position.x < endPos.position.x)
         {
@@ -37,7 +66,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    Vector3 updatePos() { return Player.transform.position - WinText.transform.position; } 
+    Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
                   
     
 
@@ -48,15 +77,16 @@ public class GameManager : MonoBehaviour
             spawnPoint = Player.transform.position;
         }else
         {
-            Player.transform.position = spawnPoint;
+            Player.transform.position = restartPoint;
         }
     }
 
-    public void ProceduralLevel(Collision collision)
+    public void UpdateInvisibleLevel()
     {
-        collision.gameObject.SetActive(true);
+
     }
 
+   
 
 
 
