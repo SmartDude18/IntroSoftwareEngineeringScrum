@@ -67,8 +67,6 @@ public class GameManager : MonoBehaviour
     }
 
     Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
-                  
-    
 
     public void UpdateSpawnpoint(bool isRestart)
     {
