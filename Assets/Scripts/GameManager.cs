@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
 
         spawnPoint = Player.transform.position;
         restartPoint = spawnPoint;
-        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y, WinText.transform.position.z + (UpdatePos().z - 4));
+        UpdateWinSign();
         endPoint = new Vector3(endPos.position.x, endPos.position.y + (distanceValue / 4), WinText.transform.position.z);
     }
 
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         var currentTransform = new Vector3();
         if (!(WinText.transform.position.x < (WinText.transform.position.x + UpdatePos().x - distanceValue)) && WinText.transform.position.x > endPos.position.x)
         {
-            WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
+            UpdateWinSign();
         }
         else if (WinText.transform.position.x < endPos.position.x)
         {
@@ -74,6 +74,12 @@ public class GameManager : MonoBehaviour
 
     Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
 
+
+    public void UpdateWinSign()
+    {
+        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
+    }
+
     public void UpdateSpawnpoint(bool isRestart)
     {
         if (!isRestart)
@@ -82,6 +88,7 @@ public class GameManager : MonoBehaviour
         }else
         {
             Player.transform.position = restartPoint;
+            UpdateWinSign();
         }
     }
 
