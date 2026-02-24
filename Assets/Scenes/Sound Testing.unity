@@ -425,18 +425,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5682086279285460988, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6237601395389262886, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
-      propertyPath: m_Name
-      value: MenuMusicOutOfReach
-      objectReference: {fileID: 0}
-    - target: {fileID: 6237601395389262886, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 259269109346478717, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.4548362
@@ -477,6 +465,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5682086279285460988, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6237601395389262886, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
+      propertyPath: m_Name
+      value: MenuMusicOutOfReach
+      objectReference: {fileID: 0}
+    - target: {fileID: 6237601395389262886, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -495,6 +495,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 338870397974608894, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 816968677905151618, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1361489974930435482, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
       propertyPath: m_Name
       value: UIPrefab
