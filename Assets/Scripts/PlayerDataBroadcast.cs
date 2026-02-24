@@ -35,4 +35,23 @@ public class PlayerDataBroadcast : MonoBehaviour
             //broadcast for player off ground
         }
     }
+
+    public void PlayerDies(string tag)
+    {
+        switch(tag)
+        {
+            case "spike":
+                //audio for spike death
+                Debug.Log("Spike Death");
+                break;
+            case "DeathBox":
+                //audio for falling off
+                Debug.Log("Fall death");
+                break;
+            case "badCheckpoint":
+                //audio for hitting bad checkpoint
+                Debug.Log("Bad Checkpoint");
+                break;
+        }
+    }
 }
