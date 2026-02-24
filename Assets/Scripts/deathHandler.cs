@@ -55,7 +55,7 @@ public class deathHandler : MonoBehaviour
     {
         
         playerDeathCount++;
-        Debug.Log("DIE: " + playerDeathCount);
+        Debug.Log("DIE: " + playerDeathCount + " : " + deathTag);
         dataBroadcast.PlayerDies(deathTag);
         transform.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         transform.position = respawnPoint;

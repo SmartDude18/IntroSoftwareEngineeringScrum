@@ -48,6 +48,10 @@ public class PlayerDataBroadcast : MonoBehaviour
                 //audio for falling off
                 Debug.Log("Fall death");
                 break;
+            case "badCheckpoint":
+                //audio for hitting bad checkpoint
+                Debug.Log("Bad Checkpoint");
+                break;
         }
     }
 }
