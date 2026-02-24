@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,8 @@ public class PlayerMove : MonoBehaviour
     private LayerMask groundLayer;
     [SerializeField]
     private PlayerDataBroadcast dataSystem;
+    [SerializeField]
+    private string[] deathTags = new string[] { };
 
     //inspector items - settings
     [SerializeField]
@@ -44,6 +47,7 @@ public class PlayerMove : MonoBehaviour
     bool hasJumped;
     private float camX = 0;
     private float yRotation = -90;
+    private int playerDeaths;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -128,7 +132,16 @@ public class PlayerMove : MonoBehaviour
         Physics.Raycast(foot.transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer);
         return hit;
     }
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(deathTags.Contains(collision.gameObject.tag))
+        {
+            playerDeaths++;
+            transform.position = gameManager.spawnPoint;
+            gameManager.UpdateWinSign();
+            dataSystem.PlayerDies(collision.gameObject.tag);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         switch(other.gameObject.tag.ToString())
