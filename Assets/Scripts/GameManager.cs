@@ -9,11 +9,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject Player;
     [SerializeField] private GameObject WinText;
     [SerializeField] private GameObject[] CheckPoints;
-    [SerializeField] private Material[] Materials;
+    [SerializeField] private Material[] CheckPointMaterials;
 
     [Range(0,100)]
     [SerializeField] private float distanceValue;
     [SerializeField] private Transform endPos;
+    [SerializeField] private Transform WinTransform;
 
     public Vector3 spawnPoint { get; private set; }
     private Vector3 endPoint;
@@ -33,20 +34,20 @@ public class GameManager : MonoBehaviour
             if (randTag > 0) 
             { 
                 CheckPoints[i].gameObject.tag = "Checkpoint";
-                CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = Materials[0];
+                CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = CheckPointMaterials[0];
 
             }
             else 
             {
                 CheckPoints[i].gameObject.tag = "Restart";
-                CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = Materials[1];
+                CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = CheckPointMaterials[1];
             }
            
         }
 
         spawnPoint = Player.transform.position;
         restartPoint = spawnPoint;
-        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y, WinText.transform.position.z);
+        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y, WinText.transform.position.z + (UpdatePos().z - 4));
         endPoint = new Vector3(endPos.position.x, endPos.position.y + (distanceValue / 4), WinText.transform.position.z);
     }
 
@@ -56,13 +57,18 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        var currentTransform = new Vector3();
         if (!(WinText.transform.position.x < (WinText.transform.position.x + UpdatePos().x - distanceValue)) && WinText.transform.position.x > endPos.position.x)
         {
-            WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 4), WinText.transform.position.z);
+            WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
         }
         else if (WinText.transform.position.x < endPos.position.x)
         {
             WinText.transform.position = endPoint;
+        }
+        else
+        {
+            WinText.transform.position = new Vector3(WinText.transform.position.x, WinText.transform.position.y, WinText.transform.position.z + (UpdatePos().z - 4));
         }
     }
 
