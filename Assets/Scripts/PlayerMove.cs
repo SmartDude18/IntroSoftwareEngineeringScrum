@@ -28,6 +28,8 @@ public class PlayerMove : MonoBehaviour
     private float camSensitivity;
     [SerializeField]
     private float camMaxAngle, camMinAngle;
+    [SerializeField]
+    private GameManager gameManager;
 
 
     //internal objects
@@ -37,10 +39,11 @@ public class PlayerMove : MonoBehaviour
     InputAction sprintAction;
 
     Vector2 lookValue;
+    Quaternion forwardCam;
     private Rigidbody body;
     bool hasJumped;
     private float camX = 0;
-    private float yRotation;
+    private float yRotation = -90;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -52,13 +55,16 @@ public class PlayerMove : MonoBehaviour
         sprintAction = InputSystem.actions.FindAction("Sprint");
 
         Cursor.lockState = CursorLockMode.Locked;
+        forwardCam = cam.transform.localRotation;
+
+
     }
 
     void Update()
     {
         lookValue = camAction.ReadValue<Vector2>();
-        yRotation += lookValue.x * (camSensitivity * 0.1f);
-        camX -= lookValue.y * (camSensitivity * 0.1f);
+        yRotation += lookValue.x * (camSensitivity * 0.01f);
+        camX -= lookValue.y * (camSensitivity * 0.01f);
         camX = Mathf.Clamp(camX, camMinAngle, camMaxAngle);
 
         transform.rotation = Quaternion.Euler(0, yRotation, 0);
@@ -67,8 +73,9 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        RaycastHit hit;
         Vector2 moveValue = moveAction.ReadValue<Vector2>();
-        bool isGrounded = groundCheck();
+        bool isGrounded = Physics.Raycast(foot.transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer);
 
         dataSystem.PlayerMove(moveValue.magnitude > 0, moveValue.magnitude);
         dataSystem.PlayerGrounded(isGrounded);
@@ -78,8 +85,6 @@ public class PlayerMove : MonoBehaviour
 
         float currentSpeed = sprintAction.IsPressed() ? moveSpeed * 2.0f : moveSpeed;
         Vector3 movePower = ((forward * moveValue.y) + (right * moveValue.x)) * currentSpeed;
-
-
 
         if (isGrounded && !hasJumped)
         {
@@ -104,7 +109,8 @@ public class PlayerMove : MonoBehaviour
         if (jumpAction.IsPressed() && isGrounded && !hasJumped)
         {
             hasJumped = true;
-            jump();
+            dataSystem.PlayerJump();
+            body.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
         }
         else if (!jumpAction.IsPressed() && isGrounded && hasJumped)
         {
@@ -112,24 +118,10 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
     public void LateUpdate()
     {
         cam.transform.localRotation = Quaternion.Euler(camX, yRotation, 0);
     }
-
-    private void jump()
-    {
-        dataSystem.PlayerJump();
-        body.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
-    }
-
-    private bool groundCheck()
-    {
-        RaycastHit hit;
-        return (Physics.Raycast(foot.transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer));
-    }
-
     private RaycastHit getGround()
     {
         RaycastHit hit;
@@ -137,4 +129,22 @@ public class PlayerMove : MonoBehaviour
         return hit;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        switch(other.gameObject.tag.ToString())
+        {
+            case "Checkpoint":
+                gameManager.UpdateSpawnpoint(false);
+                other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 1).gameObject.SetActive(false);
+                other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 2).gameObject.SetActive(true);
+                break;
+
+            case "Restart":
+                gameManager.UpdateSpawnpoint(true);
+                camX = forwardCam.eulerAngles.x;
+                yRotation = forwardCam.eulerAngles.y;
+                cam.transform.localRotation = forwardCam;
+                break;
+        }
+    }
 }

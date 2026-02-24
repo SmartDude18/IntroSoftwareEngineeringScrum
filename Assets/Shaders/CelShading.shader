@@ -160,7 +160,10 @@ Shader "GAT350/CelShader"
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 half4 rim = rimIntensity * _RimColor;
 
-                return albedo * (_AmbientColor + light + specular + rim);
+                half4 finalColor = albedo * (_AmbientColor + light + specular + rim);
+                finalColor.rgb = saturate(finalColor.rgb);
+
+                return finalColor;
             }
             ENDHLSL
         }

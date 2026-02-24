@@ -7,8 +7,8 @@ TagManager:
   - ground
   - spike
   - DeathBox
-  - checkpoint
-  - badCheckpoint
+  - Checkpoint
+  - Restart
   layers:
   - Default
   - TransparentFX
