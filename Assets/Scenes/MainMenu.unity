@@ -189,6 +189,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 259269109346478717, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
   m_PrefabInstance: {fileID: 264953062}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &264953064 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5682086279285460988, guid: 7e87562814de1d341bad90b00bf55af7, type: 3}
+  m_PrefabInstance: {fileID: 264953062}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &345553934
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,6 +726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07da1fc382969a044ae0cfe315088dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Menu
+  menuMusic: {fileID: 264953064}
 --- !u!1 &1591054123
 GameObject:
   m_ObjectHideFlags: 0
