@@ -517,7 +517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 816968677905151618, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1361489974930435482, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
       propertyPath: m_Name
@@ -527,6 +527,18 @@ PrefabInstance:
       propertyPath: pauseMusic
       value: 
       objectReference: {fileID: 1124742764}
+    - target: {fileID: 2683056814740590892, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2683056814740590892, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4707d663da494e1478e40c712262f451, type: 3}
+    - target: {fileID: 4181168819779269356, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
     - target: {fileID: 4188751269313530774, guid: 882798de87e72114e8782b9e719e5b4b, type: 3}
       propertyPath: m_Pivot.x
       value: 0
