@@ -20,11 +20,14 @@ public class GameManager : MonoBehaviour
     private Vector3 endPoint;
     private Vector3 restartPoint;
 
+    private float furthestDistance = 0;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        furthestDistance = Player.transform.position.x - distanceValue;
+        WinText.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + (distanceValue / 4), Player.transform.position.z - 4);
         
         for (int i = 0; i < CheckPoints.Length; i++)
         {
@@ -47,7 +50,7 @@ public class GameManager : MonoBehaviour
 
         spawnPoint = Player.transform.position;
         restartPoint = spawnPoint;
-        UpdateWinSign();
+        //UpdateWinSign();
         endPoint = new Vector3(endPos.position.x, endPos.position.y + (distanceValue / 4), WinText.transform.position.z);
     }
 
@@ -57,6 +60,13 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+
+        float shiftX = Player.transform.position.x - distanceValue;
+        float clampedX = Mathf.Clamp(shiftX, endPoint.x, furthestDistance);
+        furthestDistance = clampedX;
+        WinText.transform.position = new Vector3(clampedX, WinText.transform.position.y, WinText.transform.position.z);
+        
+        /*
         var currentTransform = new Vector3();
         if (!(WinText.transform.position.x < (WinText.transform.position.x + UpdatePos().x - distanceValue)) && WinText.transform.position.x > endPos.position.x)
         {
@@ -70,14 +80,19 @@ public class GameManager : MonoBehaviour
         {
             WinText.transform.position = new Vector3(WinText.transform.position.x, WinText.transform.position.y, WinText.transform.position.z + (UpdatePos().z - 4));
         }
+        */
+        
     }
 
-    Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
+    //Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
 
 
     public void UpdateWinSign()
     {
-        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
+        float shiftX = Player.transform.position.x - distanceValue;
+        furthestDistance = shiftX;
+        WinText.transform.position = new Vector3(shiftX, WinText.transform.position.y, WinText.transform.position.z);
+        //WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
     }
 
     public void UpdateSpawnpoint(bool isRestart)
