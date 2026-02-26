@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
         }else
         {
             Player.transform.position = restartPoint;
+            spawnPoint = Player.transform.position;
             UpdateWinSign();
         }
     }
