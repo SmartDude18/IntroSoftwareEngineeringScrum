@@ -1,0 +1,127 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(CharacterController))]
+public class PlayerController : MonoBehaviour
+{
+    [SerializeField] PlayerData data;
+    [SerializeField] Transform view;
+    [SerializeField] Animator animator;
+
+    [SerializeField] float rayLength;
+    [SerializeField] LayerMask groundLayerMask;
+
+    CharacterController controller;
+    InputAction moveAction;
+    InputAction jumpAction;
+    InputAction sprintAction;
+
+    Vector2 movementInput = Vector2.zero;
+    Vector3 velocity = Vector3.zero;
+    bool isSprinting = false;
+    bool onGround = true;
+
+    float groundedTimer = 0f;
+    const float groundedGrace = 0.1f;
+
+    public Transform View { get => view; set => view = value; }
+
+    void Start()
+    {
+        moveAction = InputSystem.actions.FindAction("Move");
+        moveAction.performed += OnMove;
+        moveAction.canceled += OnMove;
+
+        sprintAction = InputSystem.actions.FindAction("Sprint");
+        sprintAction.performed += OnSprint;
+        sprintAction.canceled += OnSprint;
+
+        jumpAction = InputSystem.actions.FindAction("Jump");
+        jumpAction.performed += OnJump;
+        jumpAction.canceled += OnJump;
+
+        controller = GetComponent<CharacterController>();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    void Update()
+    {
+
+        Debug.Log(onGround);
+        if (controller.isGrounded)
+            groundedTimer = groundedGrace;
+        else
+            groundedTimer -= Time.deltaTime;
+
+        onGround = groundedTimer > 0;
+
+        if (onGround && velocity.y < 0)
+            velocity.y = -2f;
+
+
+        Vector3 movement = new Vector3(movementInput.x, 0, movementInput.y);
+        movement = Quaternion.AngleAxis(view.rotation.eulerAngles.y, Vector3.up) * movement;
+
+        Vector3 acceleration = Vector3.zero;
+        acceleration.x = movement.x * data.acceleration;
+        acceleration.z = movement.z * data.acceleration;
+
+        if (!onGround) acceleration *= 0.1f;
+
+        Vector3 vXZ = new Vector3(velocity.x, 0, velocity.z);
+        vXZ += acceleration * Time.deltaTime;
+        vXZ = Vector3.ClampMagnitude(vXZ, isSprinting ? data.sprintSpeed : data.speed);
+
+        velocity.x = vXZ.x;
+        velocity.z = vXZ.z;
+
+        if (movement.sqrMagnitude <= 0 && onGround)
+        {
+            float drag = 10;
+            velocity.x = Mathf.MoveTowards(velocity.x, 0, drag * Time.deltaTime);
+            velocity.z = Mathf.MoveTowards(velocity.z, 0, drag * Time.deltaTime);
+        }
+
+        transform.rotation = Quaternion.Euler(0, view.eulerAngles.y, 0);
+
+        velocity.y += data.gravity * Time.deltaTime;
+
+        if (onGround)
+            velocity.y = Mathf.Max(velocity.y, -2f);
+
+        controller.Move(velocity * Time.deltaTime);
+
+        animator.SetFloat("Speed", new Vector3(velocity.x, 0, velocity.z).magnitude);
+        animator.SetFloat("YVelocity", controller.velocity.y);
+        animator.SetBool("OnGround", onGround);
+    }
+
+    public void OnMove(InputAction.CallbackContext ctx)
+    {
+        movementInput = ctx.ReadValue<Vector2>();
+    }
+
+    public void OnSprint(InputAction.CallbackContext ctx)
+    {
+        if (ctx.phase == InputActionPhase.Performed) isSprinting = true;
+        else if (ctx.phase == InputActionPhase.Canceled) isSprinting = false;
+    }
+
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (ctx.phase == InputActionPhase.Performed && onGround)
+        {
+            velocity.y = Mathf.Sqrt(-2 * data.gravity * data.jumpHeight);
+            animator.SetTrigger("Jump");
+        }
+    }
+
+    public void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        var rb = hit.collider.attachedRigidbody;
+        if (rb == null || rb.isKinematic || hit.moveDirection.y < -0.3f) return;
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+        rb.linearVelocity = pushDir * data.pushForce;
+    }
+}

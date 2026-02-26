@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     private string[] deathTags = new string[] { };
 
+
     //inspector items - settings
     [SerializeField]
     private float moveSpeed;
