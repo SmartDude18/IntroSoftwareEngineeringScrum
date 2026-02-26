@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,9 +8,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] PlayerData data;
     [SerializeField] Transform view;
     [SerializeField] Animator animator;
-
     [SerializeField] float rayLength;
     [SerializeField] LayerMask groundLayerMask;
+    [SerializeField] private PlayerDataBroadcast dataSystem;
+    [SerializeField] private string[] deathTags = new string[] { };
+    [SerializeField] private GameManager gameManager;
 
     CharacterController controller;
     InputAction moveAction;
@@ -23,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     float groundedTimer = 0f;
     const float groundedGrace = 0.1f;
+    int playerDeaths;
 
     public Transform View { get => view; set => view = value; }
 
@@ -47,8 +51,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
-        Debug.Log(onGround);
         if (controller.isGrounded)
             groundedTimer = groundedGrace;
         else
@@ -58,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
         if (onGround && velocity.y < 0)
             velocity.y = -2f;
+        dataSystem.PlayerGrounded(onGround);
 
 
         Vector3 movement = new Vector3(movementInput.x, 0, movementInput.y);
@@ -113,15 +116,42 @@ public class PlayerController : MonoBehaviour
         if (ctx.phase == InputActionPhase.Performed && onGround)
         {
             velocity.y = Mathf.Sqrt(-2 * data.gravity * data.jumpHeight);
+            dataSystem.PlayerJump();
             animator.SetTrigger("Jump");
         }
     }
-
     public void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        if (deathTags.Contains(hit.gameObject.tag))
+        {
+            Debug.Log("yesss");
+            playerDeaths++;
+            transform.position = gameManager.spawnPoint;
+            gameManager.UpdateWinSign();
+            dataSystem.PlayerDies(hit.gameObject.tag);
+        }
+
         var rb = hit.collider.attachedRigidbody;
         if (rb == null || rb.isKinematic || hit.moveDirection.y < -0.3f) return;
         Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
         rb.linearVelocity = pushDir * data.pushForce;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Touched");
+        Debug.Log(other.gameObject.tag.ToString());
+        switch (other.gameObject.tag.ToString())
+        {
+            case "Checkpoint":
+                gameManager.UpdateSpawnpoint(false);
+                other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 1).gameObject.SetActive(false);
+                other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 2).gameObject.SetActive(true);
+                break;
+
+            case "Restart":
+                gameManager.UpdateSpawnpoint(true);
+                break;
+        }
     }
 }

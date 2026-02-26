@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
 
         spawnPoint = Player.transform.position;
         restartPoint = spawnPoint;
-        //UpdateWinSign();
+        UpdateWinSign();
         endPoint = new Vector3(endPos.position.x, endPos.position.y + (distanceValue / 4), WinText.transform.position.z);
     }
 
