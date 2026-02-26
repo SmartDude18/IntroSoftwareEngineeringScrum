@@ -60,14 +60,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-
-        float shiftX = Player.transform.position.x - distanceValue;
-        float clampedX = Mathf.Clamp(shiftX, endPoint.x, furthestDistance);
-        furthestDistance = clampedX;
-        WinText.transform.position = new Vector3(clampedX, WinText.transform.position.y, WinText.transform.position.z);
-        
-        /*
-        var currentTransform = new Vector3();
         if (!(WinText.transform.position.x < (WinText.transform.position.x + UpdatePos().x - distanceValue)) && WinText.transform.position.x > endPos.position.x)
         {
             UpdateWinSign();
@@ -80,19 +72,15 @@ public class GameManager : MonoBehaviour
         {
             WinText.transform.position = new Vector3(WinText.transform.position.x, WinText.transform.position.y, WinText.transform.position.z + (UpdatePos().z - 4));
         }
-        */
         
     }
 
-    //Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
+    Vector3 UpdatePos() { return Player.transform.position - WinText.transform.position; } 
 
 
     public void UpdateWinSign()
     {
-        float shiftX = Player.transform.position.x - distanceValue;
-        furthestDistance = shiftX;
-        WinText.transform.position = new Vector3(shiftX, WinText.transform.position.y, WinText.transform.position.z);
-        //WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
+        WinText.transform.position = new Vector3(WinText.transform.position.x + UpdatePos().x - distanceValue, WinText.transform.position.y + UpdatePos().y + (distanceValue / 5), WinText.transform.position.z + (UpdatePos().z - 4));
     }
 
     public void UpdateSpawnpoint(bool isRestart)
