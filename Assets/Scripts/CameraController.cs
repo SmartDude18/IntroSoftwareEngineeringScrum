@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    [Range(0f,10f)]
     [SerializeField] float sensitivity = 1f;
     [SerializeField] float minPitch = -80f;
     [SerializeField] float maxPitch = 80f;

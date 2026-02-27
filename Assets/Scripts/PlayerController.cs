@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 movementInput = Vector2.zero;
     Vector3 velocity = Vector3.zero;
+    Vector3 spawn;
     bool isSprinting = false;
     bool onGround = true;
 
@@ -32,6 +33,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+
+        spawn = gameManager.spawnPoint;
+
         moveAction = InputSystem.actions.FindAction("Move");
         moveAction.performed += OnMove;
         moveAction.canceled += OnMove;
@@ -124,9 +128,10 @@ public class PlayerController : MonoBehaviour
     {
         if (deathTags.Contains(hit.gameObject.tag))
         {
-            Debug.Log("yesss");
             playerDeaths++;
+            controller.enabled = false;
             transform.position = gameManager.spawnPoint;
+            controller.enabled = true;
             gameManager.UpdateWinSign();
             dataSystem.PlayerDies(hit.gameObject.tag);
         }
@@ -148,9 +153,15 @@ public class PlayerController : MonoBehaviour
                 other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 1).gameObject.SetActive(false);
                 other.gameObject.transform.GetChild(other.gameObject.transform.childCount - 2).gameObject.SetActive(true);
                 break;
-
             case "Restart":
+                Debug.Log("we in");
                 gameManager.UpdateSpawnpoint(true);
+
+                controller.enabled = false;
+                transform.position = gameManager.spawnPoint;
+                controller.enabled = true;
+                gameManager.UpdateWinSign();
+
                 break;
         }
     }
