@@ -1,7 +1,6 @@
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -20,15 +19,13 @@ public class GameManager : MonoBehaviour
     private Vector3 endPoint;
     private Vector3 restartPoint;
 
-    private float furthestDistance = 0;
+    private List<GameObject> invisiblePlatforms = new List<GameObject>();
+    private List<GameObject> activeObjects = new List<GameObject>();
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        furthestDistance = Player.transform.position.x - distanceValue;
-        WinText.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + (distanceValue / 4), Player.transform.position.z - 4);
-        
         for (int i = 0; i < CheckPoints.Length; i++)
         {
             int randTag = Random.Range(0, 4);
@@ -45,7 +42,14 @@ public class GameManager : MonoBehaviour
                 CheckPoints[i].gameObject.tag = "Restart";
                 CheckPoints[i].gameObject.transform.GetChild(0).GetComponent<Renderer>().material = CheckPointMaterials[1];
             }
-           
+        }
+
+        GameObject[] platforms = GameObject.FindGameObjectsWithTag("Platform");
+        Debug.Log(platforms.Length);
+        for (int i = 0;i < platforms.Length;i++)
+        {
+            int randPlat = Random.Range(0, platforms.Length);
+            if (randPlat <= platforms.Length / 3) { invisiblePlatforms.Add(platforms[i]); }
         }
 
         spawnPoint = Player.transform.position;
@@ -94,12 +98,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdateInvisibleLevel()
+    public void UpdateInvisibleLevel(bool visible)
     {
+
+        for (int i = 0; i < invisiblePlatforms.Count; i++)
+        {
+            if (invisiblePlatforms[i].gameObject.GetComponent<Renderer>().enabled == true && !activeObjects.Contains(invisiblePlatforms[i]))
+            {
+                activeObjects.Add(invisiblePlatforms[i].gameObject);
+            }
+        }
+
+        if (visible)
+        {
+            Debug.Log("Active true: " + activeObjects.Count);
+            for (int i = 0; i < activeObjects.Count; i++)
+            {
+                activeObjects[i].GetComponent<Renderer>().enabled = true;
+            }
+        }
+        else
+        {
+            Debug.Log("Active false: " + activeObjects.Count);
+
+            for (int i = 0; i < activeObjects.Count; i++)
+            {
+                activeObjects[i].GetComponent<Renderer>().enabled = false;
+            }
+        }
 
     }
 
-   
+
 
 
 

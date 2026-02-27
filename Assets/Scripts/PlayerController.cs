@@ -64,8 +64,8 @@ public class PlayerController : MonoBehaviour
 
         if (onGround && velocity.y < 0)
             velocity.y = -2f;
-        dataSystem.PlayerGrounded(onGround);
 
+        dataSystem.PlayerGrounded(onGround);
 
         Vector3 movement = new Vector3(movementInput.x, 0, movementInput.y);
         movement = Quaternion.AngleAxis(view.rotation.eulerAngles.y, Vector3.up) * movement;
@@ -76,7 +76,17 @@ public class PlayerController : MonoBehaviour
 
         if (!onGround) acceleration *= 0.1f;
 
+        
+
         Vector3 vXZ = new Vector3(velocity.x, 0, velocity.z);
+        if(vXZ.magnitude <= 0)
+        {
+            gameManager.UpdateInvisibleLevel(true);
+        }else if(velocity.magnitude > 0)
+        {
+            gameManager.UpdateInvisibleLevel(false);
+        }
+
         vXZ += acceleration * Time.deltaTime;
         vXZ = Vector3.ClampMagnitude(vXZ, isSprinting ? data.sprintSpeed : data.speed);
 

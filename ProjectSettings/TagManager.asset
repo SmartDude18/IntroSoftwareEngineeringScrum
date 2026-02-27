@@ -9,6 +9,7 @@ TagManager:
   - DeathBox
   - Checkpoint
   - Restart
+  - Platform
   layers:
   - Default
   - TransparentFX
