@@ -21,21 +21,18 @@ public class PlayerController : MonoBehaviour
 
     Vector2 movementInput = Vector2.zero;
     Vector3 velocity = Vector3.zero;
-    Vector3 spawn;
+
     bool isSprinting = false;
     bool onGround = true;
 
     float groundedTimer = 0f;
     const float groundedGrace = 0.1f;
-    int playerDeaths;
+    public int playerDeaths { get; private set; }
 
     public Transform View { get => view; set => view = value; }
 
     void Start()
     {
-
-        spawn = gameManager.spawnPoint;
-
         moveAction = InputSystem.actions.FindAction("Move");
         moveAction.performed += OnMove;
         moveAction.canceled += OnMove;

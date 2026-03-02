@@ -29,8 +29,6 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < CheckPoints.Length; i++)
         {
             int randTag = Random.Range(0, 4);
-
-            Debug.Log(randTag);
             if (randTag > 0) 
             { 
                 CheckPoints[i].gameObject.tag = "Checkpoint";
@@ -45,7 +43,6 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject[] platforms = GameObject.FindGameObjectsWithTag("Platform");
-        Debug.Log(platforms.Length);
         for (int i = 0;i < platforms.Length;i++)
         {
             int randPlat = Random.Range(0, platforms.Length);
@@ -119,7 +116,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Active false: " + activeObjects.Count);
 
             for (int i = 0; i < activeObjects.Count; i++)
             {
