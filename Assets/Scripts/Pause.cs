@@ -38,6 +38,8 @@ public class Pause : MonoBehaviour
     {
         //pause game
         Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         pauseMenu.SetActive(true);
         if (!pauseMusic.isPlaying)
         {
@@ -62,14 +64,19 @@ public class Pause : MonoBehaviour
 
     public void OnContinue()
     {
+        Debug.Log("Continue pressed");
         pauseMenu.SetActive(false);
         pauseMusic.Stop();
         narrator?.Stop();
         Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     public void OnExit()
     {
         confirmationMenu.SetActive(true);
+        pauseMenu.SetActive(false);
+        narrator?.Stop();
 
         if(quitMocking != null)
         {
@@ -83,5 +90,6 @@ public class Pause : MonoBehaviour
     public void OnDeny()
     {
         confirmationMenu.SetActive(false);
+        pauseMenu.SetActive(true);
     }
 }
