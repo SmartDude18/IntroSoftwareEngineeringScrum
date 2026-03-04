@@ -180,7 +180,7 @@ public class PlayerController : MonoBehaviour
 
     public void ResetPlayer(GameObject other)
     {
-        gameManager.UpdateSpawnpoint(false);
+        gameManager.UpdateSpawnpoint(true);
 
         foreach (GameObject flag in activeFlags)
         {
