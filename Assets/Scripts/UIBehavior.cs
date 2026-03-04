@@ -48,7 +48,6 @@ public class UIBehavior : MonoBehaviour
     }
     public void OnDeath()
     {
-    
         deathCounterText.text = Player.playerDeaths.ToString();
     }
 
