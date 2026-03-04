@@ -49,7 +49,7 @@ public class PlayerDataBroadcast : MonoBehaviour
             case "spike":
                 //audio for spike death
                 Debug.Log("Spike Death");
-                if (spikeDeathClip != null)
+                if (spikeDeathClip != null && !narrator.isPlaying)
                 {
                     narrator?.PlayOneShot(spikeDeathClip);
                 }
@@ -57,7 +57,7 @@ public class PlayerDataBroadcast : MonoBehaviour
             case "DeathBox":
                 //audio for falling off
                 Debug.Log("Fall death");
-                if (pitDeathClip != null)
+                if (pitDeathClip != null && !narrator.isPlaying)
                 {
                     narrator?.PlayOneShot(pitDeathClip);
                 }
